@@ -2,11 +2,11 @@ version: '2'
 services:
   python:
     build:
-      context: ./app
+      context: ./python
     networks:
       - app
     volumes:
-      - "./app/app:/home/app"
+      - "./python:/home/app"
     environment:
       PGRST_IP_ADDR: ${PGRST_IP_ADDR}
       PGRST_PORT: ${PGRST_PORT}
@@ -29,7 +29,8 @@ services:
       app:
         ipv4_address: ${DB_IP_ADDR}
   postgrest:
-    image: postgrest/postgrest:latest
+    build:
+      context: ./postgrest
     ports:
       - "${PGRST_PORT}:${PGRST_PORT}"
     networks:
@@ -37,8 +38,8 @@ services:
         ipv4_address: ${PGRST_IP_ADDR}
     depends_on:
       - db
-    build:
-      context: ./haskell
+    volumes:
+      - "./postgrest:/home"
     environment:
       DB_URI: ${DB_URI}
       DB_SCHEMA: ${DB_SCHEMA}
