@@ -7,7 +7,7 @@ def encode_jwt(role):
     payload = {'role': role}
     secret = os.environ['PGRST_JWT_SECRET']
     algorithm = 'HS256'
-    return jwt.encode(payload, secret, algorithm)
+    return jwt.encode(payload, secret, algorithm).decode('ascii')
 
 
 def anon_jwt():

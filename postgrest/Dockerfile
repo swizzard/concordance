@@ -7,4 +7,4 @@ RUN apt-get update                                         \
     && apt-get install -y curl postgresql-client libpq-dev \
     && /home/install.sh
 
-CMD /home/migrate.sh && exec postgrest /etc/postgrest.conf
+CMD ["/home/wait-for-it.sh", "db:5432", "--", "/home/go.sh"]

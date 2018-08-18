@@ -23,10 +23,11 @@ class Requester:
                                          os.environ['PGRST_PORT'])
         self.token = concordance_jwt()
 
-    def request(method, endpoint, *, params=None, json=None):
+    def request(self, method, endpoint, params=None, json=None):
         headers = {
             'Authorization': 'Bearer {}'.format(self.token),
-            'Accept': 'application/javascript'
+            'Accept': 'application/json',
+            'Prefer': 'return=representation;resolution=ignore-duplicates',
         }
         kwargs = {
             'headers': headers,
@@ -35,6 +36,18 @@ class Requester:
         }
         if params:
             kwargs['params'] = params
-        elif data:
+        elif json:
             kwargs['json'] = json
         return requests.request(**kwargs)
+
+    def get(self, endpoint, params=None):
+        return self.request('GET', endpoint, params=params)
+
+    def post(self, endpoint, json, params=None):
+        return self.request('POST', endpoint, json=json, params=params)
+
+    def patch(self, endpoint, json, params=None):
+        return self.request('PATCH', endpoint, json=json, params=params)
+
+    def delete(self, endpoint, params=None):
+        return self.request('DELETE', endpoint, params=params)

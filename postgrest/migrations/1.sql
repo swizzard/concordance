@@ -2,30 +2,36 @@ CREATE SCHEMA IF NOT EXISTS api;
 
 CREATE TABLE IF NOT EXISTS api.author (
   id serial primary key,
-  name text
+  name text,
+  UNIQUE (name)
 );
 
 CREATE TABLE IF NOT EXISTS api.doc (
   id serial primary key,
   title text,
-  year integer
+  year integer,
+  raw text,
+  UNIQUE (title, year)
 );
 
 CREATE TABLE IF NOT EXISTS api.author_doc (
   id bigserial primary key,
   author_id integer REFERENCES api.author(id),
-  doc_id integer REFERENCES api.doc(id)
+  doc_id integer REFERENCES api.doc(id),
+  UNIQUE (author_id, doc_id)
 );
 
 CREATE TABLE IF NOT EXISTS api.genre (
   id serial primary key,
-  name text
+  name text,
+  UNIQUE (name)
 );
 
 CREATE TABLE IF NOT EXISTS api.genre_doc (
   id bigserial primary key,
   genre_id integer REFERENCES api.genre(id),
-  doc_id integer REFERENCES api.doc(id)
+  doc_id integer REFERENCES api.doc(id),
+  UNIQUE (genre_id, doc_id)
 );
 
 CREATE TABLE IF NOT EXISTS api.word_info (
@@ -51,7 +57,6 @@ CREATE INDEX IF NOT EXISTS tokWordId on api.token (word_id);
 
 DROP ROLE IF EXISTS public_role;
 CREATE ROLE public_role;
-GRANT public_role TO public_anon;
 GRANT public_role TO postgres;
 
 GRANT usage ON SCHEMA api TO public_role;
